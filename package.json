@@ -1,0 +1,7 @@
+{
+  "name": "x-clone-root",
+  "private": true,
+  "scripts": {
+    "build": "cd twitter && npm install && npm run build"
+  }
+}
