@@ -15,7 +15,7 @@ const suggestions = [
     id: '1',
     username: 'narendramodi',
     displayName: 'Narendra Modi',
-    avatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400',
+    avatar: 'https://x.com/narendramodi/photo',
     verified: true
   },
   {
@@ -34,26 +34,40 @@ const suggestions = [
   }
 ];
 
-export default function RightSidebar() {
+export default function RightSidebar({ onSearch, onNavigate }: { onSearch?: (query: string) => void; onNavigate?: (page: string) => void }) {
+  const [query, setQuery] = React.useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim() && onSearch) {
+      onSearch(query);
+    }
+  };
+
   return (
     <div className="w-80 p-4 space-y-4">
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+      <form onSubmit={handleSubmit} className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
         <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Search"
-          className="pl-12 bg-gray-900 border-gray-800 text-white placeholder-gray-400 rounded-full py-3"
+          className="pl-12 bg-secondary border-border text-foreground placeholder-muted-foreground rounded-full py-3 focus:border-blue-500"
         />
-      </div>
+      </form>
 
       {/* Subscribe to Premium */}
-      <Card className="bg-gray-900 border-gray-800">
+      <Card className="bg-secondary/50 border-border">
         <CardContent className="p-4">
-          <h3 className="text-white text-xl font-bold mb-2">Subscribe to Premium</h3>
-          <p className="text-gray-400 text-sm mb-4">
+          <h3 className="text-foreground text-xl font-bold mb-2">Subscribe to Premium</h3>
+          <p className="text-muted-foreground text-sm mb-4">
             Subscribe to unlock new features and if eligible, receive a share of revenue.
           </p>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full">
+          <Button
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full"
+            onClick={() => onNavigate?.("subscription")}
+          >
             Subscribe
           </Button>
         </CardContent>
@@ -62,9 +76,9 @@ export default function RightSidebar() {
      
 
       {/* Who to follow */}
-      <Card className="bg-gray-900 border-gray-800">
+      <Card className="bg-secondary/50 border-border">
         <CardContent className="p-4">
-          <h3 className="text-white text-xl font-bold mb-4">You might like</h3>
+          <h3 className="text-foreground text-xl font-bold mb-4">You might like</h3>
           <div className="space-y-4">
             {suggestions.map((user) => (
               <div key={user.id} className="flex items-center justify-between">
@@ -75,7 +89,7 @@ export default function RightSidebar() {
                   </Avatar>
                   <div>
                     <div className="flex items-center space-x-1">
-                      <span className="text-white font-semibold">{user.displayName}</span>
+                      <span className="text-foreground font-semibold">{user.displayName}</span>
                       {user.verified && (
                         <div className="bg-blue-500 rounded-full p-0.5">
                           <svg className="h-3 w-3 text-white fill-current" viewBox="0 0 20 20">
@@ -84,12 +98,12 @@ export default function RightSidebar() {
                         </div>
                       )}
                     </div>
-                    <span className="text-gray-400 text-sm">@{user.username}</span>
+                    <span className="text-muted-foreground text-sm">@{user.username}</span>
                   </div>
                 </div>
                 <Button
                   variant="outline"
-                  className="bg-white text-black hover:bg-gray-200 font-semibold rounded-full px-4"
+                  className="bg-foreground text-background hover:bg-foreground/90 border-none font-semibold rounded-full px-4"
                 >
                   Follow
                 </Button>
@@ -103,7 +117,7 @@ export default function RightSidebar() {
       </Card>
 
       {/* Footer */}
-      <div className="p-4 text-xs text-gray-500 space-y-2">
+      <div className="p-4 text-xs text-muted-foreground space-y-2">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           <a href="#" className="hover:underline">Terms of Service</a>
           <a href="#" className="hover:underline">Privacy Policy</a>

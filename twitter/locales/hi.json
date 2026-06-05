@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "save": "सहेजें",
+    "close": "बंद करें"
+  },
+  "landing": {
+    "happening": "अभी हो रहा है",
+    "joinToday": "आज ही जुड़ें।",
+    "signUpGoogle": "Google से साइन अप करें",
+    "signUpApple": "Apple से साइन अप करें",
+    "or": "या",
+    "createAccount": "खाता बनाएं",
+    "terms": "साइन अप करके, आप",
+    "termsOfService": "सेवा की शर्तें",
+    "and": "और",
+    "privacyPolicy": "गोपनीयता नीति",
+    "including": "सहित",
+    "cookieUse": "कुकी उपयोग",
+    "alreadyHaveAccount": "पहले से एक खाता है?",
+    "login": "लॉग इन करें",
+    "connecting": "कनेक्ट हो रहा है..."
+  },
+  "auth": {
+    "login": "लॉग इन करें",
+    "signup": "साइन अप करें",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "username": "उपयोगकर्ता नाम",
+    "displayName": "प्रदर्शन नाम",
+    "forgotPassword": "पासवर्ड भूल गए?"
+  },
+  "feed": {
+    "whatsHappening": "क्या हो रहा है?",
+    "post": "पोस्ट करें",
+    "home": "होम",
+    "explore": "एक्सप्लोर",
+    "notifications": "सूचनाएं",
+    "profile": "प्रोफ़ाइल",
+    "subscription": "सदस्यता"
+  },
+  "language": {
+    "selectLanguage": "भाषा चुनें",
+    "currentLanguage": "वर्तमान भाषा",
+    "changeLanguage": "भाषा बदलें",
+    "english": "अंग्रेज़ी",
+    "spanish": "स्पेनिश",
+    "hindi": "हिंदी",
+    "portuguese": "पुर्तगाली",
+    "chinese": "चीनी",
+    "french": "फ्रेंच",
+    "verificationRequired": "सत्यापन आवश्यक है",
+    "enterOtp": "OTP दर्ज करें",
+    "otpSentEmail": "आपके ईमेल पर OTP भेजा गया है",
+    "otpSentPhone": "आपके फोन पर OTP भेजा गया है",
+    "verifyAndChange": "सत्यापित करें और बदलें",
+    "languageChanged": "भाषा सफलतापूर्वक बदल गई!",
+    "invalidOtp": "अमान्य या समाप्त OTP",
+    "frenchEmailVerification": "फ्रेंच के लिए, सत्यापन आपके ईमेल पर भेजा जाएगा",
+    "otherLanguagesPhoneVerification": "अन्य भाषाओं के लिए, सत्यापन आपके फोन पर भेजा जाएगा"
+  }
+}

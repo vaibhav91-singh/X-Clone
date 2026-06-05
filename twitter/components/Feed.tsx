@@ -5,6 +5,9 @@ import LoadingSpinner from "./loading-spinner";
 import TweetCard from "./TweetCard";
 import TweetComposer from "./TweetComposer";
 import axiosInstance from "@/lib/axiosInstance";
+import { useAuth } from "@/context/AuthContext";
+import { containsKeywords, showNotification } from "@/lib/notifications";
+import { useRef } from "react";
 
 interface Tweet {
   id: string;
@@ -85,9 +88,12 @@ const tweets: Tweet[] = [
       "https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=800",
   },
 ];
-const Feed = () => {
+const Feed = ({ onNavigate }: { onNavigate?: (page: string) => void }) => {
   const [tweetsData, setTweetsData] = useState<Tweet[]>([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const notifiedTweets = useRef<Set<string>>(new Set());
+  const initialLoadDone = useRef(false);
 
   const fetchTweets = async () => {
     try {
@@ -114,39 +120,68 @@ const Feed = () => {
   useEffect(() => {
     fetchTweets();
   }, []);
+
+  // Notification logic
+  useEffect(() => {
+    if (!user?.notificationsEnabled || tweetsData.length === 0) return;
+
+    // If this is the first time we have tweets, just mark them all as notified
+    if (!initialLoadDone.current) {
+      tweetsData.forEach((tweet) => {
+        const tweetId = tweet.id || (tweet as any)._id;
+        notifiedTweets.current.add(tweetId);
+      });
+      initialLoadDone.current = true;
+      return;
+    }
+
+    // For subsequent updates, show notifications for new matching tweets
+    tweetsData.forEach((tweet) => {
+      const tweetId = tweet.id || (tweet as any)._id;
+      if (!notifiedTweets.current.has(tweetId)) {
+        if (containsKeywords(tweet.content)) {
+          showNotification(`New Tweet from ${tweet.author.displayName}`, {
+            body: tweet.content,
+          });
+        }
+        notifiedTweets.current.add(tweetId);
+      }
+    });
+  }, [tweetsData, user?.notificationsEnabled]);
   const handlenewtweet = (newtweet: any) => {
     setTweetsData((prev: any) => [newtweet, ...prev]);
   };
   return (
     <div className="min-h-screen">
-      <div className="sticky top-0 bg-black/90 backdrop-blur-md border-b border-gray-800 z-10">
+      <div className="sticky top-0 bg-background/90 backdrop-blur-md border-b border-border z-10">
         <div className="px-4 py-3">
-          <h1 className="text-xl font-bold text-white">Home</h1>
+          <h1 className="text-xl font-bold text-foreground">Home</h1>
+          <p className="text-sm text-muted-foreground mt-1">Live feed includes local posts plus real X API tweets from the configured Twitter Data source.</p>
         </div>
 
         <Tabs defaultValue="foryou" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-gray-800 rounded-none h-auto">
+          <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-border rounded-none h-auto">
             <TabsTrigger
               value="foryou"
-              className="data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:border-b-[3px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-gray-400 hover:bg-gray-900/50 py-4 font-semibold transition-all"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-b-[3px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-muted-foreground hover:bg-accent py-4 font-semibold transition-all"
             >
               For you
             </TabsTrigger>
             <TabsTrigger
               value="following"
-              className="data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:border-b-[3px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-gray-400 hover:bg-gray-900/50 py-4 font-semibold transition-all"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-b-[3px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-muted-foreground hover:bg-accent py-4 font-semibold transition-all"
             >
               Following
             </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
-      <TweetComposer onTweetPosted={handlenewtweet}/>
-      <div className="divide-y divide-gray-800">
+      <TweetComposer onTweetPosted={handlenewtweet} onNavigateToSubscription={onNavigate} />
+      <div className="divide-y divide-border">
         {loading ? (
-          <Card className="bg-black border-none">
+          <Card className="bg-background border-none">
             <CardContent className="py-12 text-center">
-              <div className="text-gray-400 mb-4">
+              <div className="text-muted-foreground mb-4">
                 <LoadingSpinner size="lg" className="mx-auto mb-4" />
                 <p className="animate-pulse">Loading tweets...</p>
               </div>

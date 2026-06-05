@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "close": "Fechar"
+  },
+  "landing": {
+    "happening": "Acontecendo agora",
+    "joinToday": "Junte-se hoje.",
+    "signUpGoogle": "Inscrever-se com o Google",
+    "signUpApple": "Inscrever-se com a Apple",
+    "or": "ou",
+    "createAccount": "Criar conta",
+    "terms": "Ao se inscrever, você concorda com os",
+    "termsOfService": "Termos de Serviço",
+    "and": "e",
+    "privacyPolicy": "Política de Privacidade",
+    "including": "incluindo",
+    "cookieUse": "Uso de Cookies",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "login": "Entrar",
+    "connecting": "Conectando..."
+  },
+  "auth": {
+    "login": "Entrar",
+    "signup": "Inscrever-se",
+    "email": "E-mail",
+    "password": "Senha",
+    "username": "Nome de usuário",
+    "displayName": "Nome de exibição",
+    "forgotPassword": "Esqueceu a senha?"
+  },
+  "feed": {
+    "whatsHappening": "O que está acontecendo?",
+    "post": "Publicar",
+    "home": "Início",
+    "explore": "Explorar",
+    "notifications": "Notificações",
+    "profile": "Perfil",
+    "subscription": "Assinatura"
+  },
+  "language": {
+    "selectLanguage": "Selecionar idioma",
+    "currentLanguage": "Idioma atual",
+    "changeLanguage": "Mudar idioma",
+    "english": "Inglês",
+    "spanish": "Espanhol",
+    "hindi": "Hindi",
+    "portuguese": "Português",
+    "chinese": "Chinês",
+    "french": "Francês",
+    "verificationRequired": "Verificação necessária",
+    "enterOtp": "Digite o OTP",
+    "otpSentEmail": "OTP foi enviado para seu e-mail",
+    "otpSentPhone": "OTP foi enviado para seu telefone",
+    "verifyAndChange": "Verificar e mudar",
+    "languageChanged": "Idioma alterado com sucesso!",
+    "invalidOtp": "OTP inválido ou expirado",
+    "frenchEmailVerification": "Para francês, a verificação será enviada para seu e-mail",
+    "otherLanguagesPhoneVerification": "Para outros idiomas, a verificação será enviada para seu telefone"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "close": "Fermer"
+  },
+  "landing": {
+    "happening": "Se passe maintenant",
+    "joinToday": "Rejoignez aujourd'hui.",
+    "signUpGoogle": "S'inscrire avec Google",
+    "signUpApple": "S'inscrire avec Apple",
+    "or": "ou",
+    "createAccount": "Créer un compte",
+    "terms": "En vous inscrivant, vous acceptez les",
+    "termsOfService": "Conditions d'utilisation",
+    "and": "et",
+    "privacyPolicy": "Politique de confidentialité",
+    "including": "y compris",
+    "cookieUse": "Utilisation des cookies",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "login": "Se connecter",
+    "connecting": "Connexion..."
+  },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "username": "Nom d'utilisateur",
+    "displayName": "Nom d'affichage",
+    "forgotPassword": "Mot de passe oublié ?"
+  },
+  "feed": {
+    "whatsHappening": "Quoi de neuf ?",
+    "post": "Publier",
+    "home": "Accueil",
+    "explore": "Explorer",
+    "notifications": "Notifications",
+    "profile": "Profil",
+    "subscription": "Abonnement"
+  },
+  "language": {
+    "selectLanguage": "Sélectionner la langue",
+    "currentLanguage": "Langue actuelle",
+    "changeLanguage": "Changer de langue",
+    "english": "Anglais",
+    "spanish": "Espagnol",
+    "hindi": "Hindi",
+    "portuguese": "Portugais",
+    "chinese": "Chinois",
+    "french": "Français",
+    "verificationRequired": "Vérification requise",
+    "enterOtp": "Entrez l'OTP",
+    "otpSentEmail": "L'OTP a été envoyé à votre e-mail",
+    "otpSentPhone": "L'OTP a été envoyé à votre téléphone",
+    "verifyAndChange": "Vérifier et changer",
+    "languageChanged": "Langue changée avec succès !",
+    "invalidOtp": "OTP invalide ou expiré",
+    "frenchEmailVerification": "Pour le français, la vérification sera envoyée à votre e-mail",
+    "otherLanguagesPhoneVerification": "Pour les autres langues, la vérification sera envoyée à votre téléphone"
+  }
+}

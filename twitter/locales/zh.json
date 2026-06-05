@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "close": "关闭"
+  },
+  "landing": {
+    "happening": "正在发生",
+    "joinToday": "今天加入。",
+    "signUpGoogle": "使用 Google 注册",
+    "signUpApple": "使用 Apple 注册",
+    "or": "或",
+    "createAccount": "创建账户",
+    "terms": "注册即表示您同意",
+    "termsOfService": "服务条款",
+    "and": "和",
+    "privacyPolicy": "隐私政策",
+    "including": "包括",
+    "cookieUse": "Cookie 使用",
+    "alreadyHaveAccount": "已有账户？",
+    "login": "登录",
+    "connecting": "连接中..."
+  },
+  "auth": {
+    "login": "登录",
+    "signup": "注册",
+    "email": "电子邮件",
+    "password": "密码",
+    "username": "用户名",
+    "displayName": "显示名称",
+    "forgotPassword": "忘记密码？"
+  },
+  "feed": {
+    "whatsHappening": "正在发生什么？",
+    "post": "发布",
+    "home": "主页",
+    "explore": "探索",
+    "notifications": "通知",
+    "profile": "个人资料",
+    "subscription": "订阅"
+  },
+  "language": {
+    "selectLanguage": "选择语言",
+    "currentLanguage": "当前语言",
+    "changeLanguage": "更改语言",
+    "english": "英语",
+    "spanish": "西班牙语",
+    "hindi": "印地语",
+    "portuguese": "葡萄牙语",
+    "chinese": "中文",
+    "french": "法语",
+    "verificationRequired": "需要验证",
+    "enterOtp": "输入 OTP",
+    "otpSentEmail": "OTP 已发送到您的电子邮件",
+    "otpSentPhone": "OTP 已发送到您的手机",
+    "verifyAndChange": "验证并更改",
+    "languageChanged": "语言已成功更改！",
+    "invalidOtp": "无效或过期的 OTP",
+    "frenchEmailVerification": "对于法语，验证将发送到您的电子邮件",
+    "otherLanguagesPhoneVerification": "对于其他语言，验证将发送到您的手机"
+  }
+}

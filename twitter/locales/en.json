@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "close": "Close"
+  },
+  "landing": {
+    "happening": "Happening now",
+    "joinToday": "Join today.",
+    "signUpGoogle": "Sign up with Google",
+    "signUpApple": "Sign up with Apple",
+    "or": "or",
+    "createAccount": "Create account",
+    "terms": "By signing up, you agree to the",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "including": "including",
+    "cookieUse": "Cookie Use",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Log in",
+    "connecting": "Connecting..."
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "displayName": "Display Name",
+    "forgotPassword": "Forgot password?"
+  },
+  "feed": {
+    "whatsHappening": "What's happening?",
+    "post": "Post",
+    "home": "Home",
+    "explore": "Explore",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "subscription": "Subscription"
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "currentLanguage": "Current Language",
+    "changeLanguage": "Change Language",
+    "english": "English",
+    "spanish": "Spanish",
+    "hindi": "Hindi",
+    "portuguese": "Portuguese",
+    "chinese": "Chinese",
+    "french": "French",
+    "verificationRequired": "Verification Required",
+    "enterOtp": "Enter OTP",
+    "otpSentEmail": "OTP has been sent to your email",
+    "otpSentPhone": "OTP has been sent to your phone",
+    "verifyAndChange": "Verify and Change",
+    "languageChanged": "Language changed successfully!",
+    "invalidOtp": "Invalid or expired OTP",
+    "frenchEmailVerification": "For French, verification will be sent to your email",
+    "otherLanguagesPhoneVerification": "For other languages, verification will be sent to your phone"
+  }
+}

@@ -9,14 +9,18 @@ import {
   MoreHorizontal,
   Camera,
   Settings,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { requestNotificationPermission } from "@/lib/notifications";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import TweetCard from "./TweetCard";
 import { Card, CardContent } from "./ui/card";
 import EditProfile from "./EditProfile";
+import LoginHistory from "./LoginHistory";
 import axiosInstance from "@/lib/axiosInstance";
 
 interface Tweet {
@@ -99,7 +103,7 @@ const tweets: Tweet[] = [
   },
 ];
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState("posts");
   const [showEditModal, setShowEditModal] = useState(false);
   const [tweetsData, setTweetsData] = useState<any[]>([]);
@@ -137,20 +141,20 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="sticky top-0 bg-black/90 backdrop-blur-md border-b border-gray-800 z-10">
+      <div className="sticky top-0 bg-background/90 backdrop-blur-md border-b border-border z-10">
         <div className="flex items-center px-4 py-3 space-x-8">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-gray-900"
+            className="rounded-full hover:bg-accent"
           >
-            <ArrowLeft className="h-5 w-5 text-white" />
+            <ArrowLeft className="h-5 w-5 text-foreground" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-white truncate max-w-[200px]">
+            <h1 className="text-xl font-bold text-foreground truncate max-w-[200px]">
               {user.displayName}
             </h1>
-            <p className="text-sm text-gray-500">{userTweets.length} posts</p>
+            <p className="text-sm text-muted-foreground">{userTweets.length} posts</p>
           </div>
         </div>
       </div>
@@ -161,16 +165,16 @@ export default function ProfilePage() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 h-9 w-9 rounded-full bg-black/50 hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-4 right-4 h-9 w-9 rounded-full bg-background/50 hover:bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Camera className="h-5 w-5 text-white" />
+            <Camera className="h-5 w-5 text-foreground" />
           </Button>
         </div>
 
         {/* Profile Picture */}
         <div className="absolute -bottom-16 left-4">
           <div className="relative group">
-            <Avatar className="h-32 w-32 border-4 border-black ring-1 ring-gray-800">
+            <Avatar className="h-32 w-32 border-4 border-background ring-1 ring-border">
               <AvatarImage src={user.avatar} alt={user.displayName} />
               <AvatarFallback className="text-3xl bg-blue-600">
                 {user.displayName[0]}
@@ -179,9 +183,9 @@ export default function ProfilePage() {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute inset-0 m-auto h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 opacity-0 group-hover:opacity-100 transition-all"
+              className="absolute inset-0 m-auto h-10 w-10 rounded-full bg-background/40 hover:bg-background/60 opacity-0 group-hover:opacity-100 transition-all"
             >
-              <Camera className="h-5 w-5 text-white" />
+              <Camera className="h-5 w-5 text-foreground" />
             </Button>
           </div>
         </div>
@@ -190,7 +194,7 @@ export default function ProfilePage() {
         <div className="flex justify-end p-4">
           <Button
             variant="outline"
-            className="border-gray-700 text-white bg-transparent hover:bg-white/10 font-bold rounded-full px-6 transition-all"
+            className="border-border text-foreground bg-transparent hover:bg-foreground/10 font-bold rounded-full px-6 transition-all"
             onClick={() => setShowEditModal(true)}
           >
             Edit profile
@@ -198,31 +202,68 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* Notification Toggle (Requirement) */}
+      <div className="px-4 py-2 border-b border-gray-800 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          {user.notificationsEnabled ? (
+            <Bell className="h-5 w-5 text-blue-500" />
+          ) : (
+            <BellOff className="h-5 w-5 text-muted-foreground" />
+          )}
+          <div>
+            <p className="text-foreground font-semibold">Tweet Notifications</p>
+            <p className="text-xs text-muted-foreground">Notify me for "cricket" or "science" tweets</p>
+          </div>
+        </div>
+        <Button
+          variant={user.notificationsEnabled ? "default" : "outline"}
+          size="sm"
+          className={`rounded-full px-4 ${
+            user.notificationsEnabled 
+              ? "bg-blue-500 hover:bg-blue-600" 
+              : "border-border text-foreground hover:bg-foreground/10"
+          }`}
+          onClick={async () => {
+            const newState = !user.notificationsEnabled;
+            if (newState) {
+              const granted = await requestNotificationPermission();
+              if (!granted) {
+                alert("Please enable notification permissions in your browser to use this feature.");
+                return;
+              }
+            }
+            await updateProfile({ notificationsEnabled: newState });
+          }}
+        >
+          {user.notificationsEnabled ? "Enabled" : "Disabled"}
+        </Button>
+      </div>
+
       {/* Profile Info */}
       <div className="px-4 pb-4 mt-12 space-y-4">
         <div className="flex items-start justify-between">
           <div className="min-w-0">
-            <h1 className="text-2xl font-extrabold text-white truncate">
+            <h1 className="text-2xl font-extrabold text-foreground truncate">
               {user.displayName}
             </h1>
-            <p className="text-gray-500">@{user.username}</p>
+            <p className="text-muted-foreground">@{user.username}</p>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-gray-900 h-9 w-9"
+            className="rounded-full hover:bg-accent h-9 w-9"
           >
-            <MoreHorizontal className="h-5 w-5 text-gray-500" />
+            <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
           </Button>
         </div>
 
         {user.bio ? (
-          <p className="text-white leading-normal whitespace-pre-wrap">{user.bio}</p>
+          <p className="text-foreground leading-normal whitespace-pre-wrap">{user.bio}</p>
         ) : (
-          <p className="text-gray-500 italic">No bio yet.</p>
+          <p className="text-muted-foreground italic">No bio yet.</p>
         )}
 
-        <div className="flex flex-wrap gap-y-2 gap-x-4 text-gray-500 text-sm">
+        <div className="flex flex-wrap gap-y-2 gap-x-4 text-muted-foreground text-sm">
           <div className="flex items-center space-x-1">
             <MapPin className="h-4 w-4" />
             <span>{user.location || "Earth"}</span>
@@ -249,24 +290,24 @@ export default function ProfilePage() {
 
         <div className="flex items-center space-x-5 text-sm">
           <div className="flex items-center space-x-1 cursor-pointer hover:underline">
-            <span className="font-bold text-white">124</span>
-            <span className="text-gray-500">Following</span>
+            <span className="font-bold text-foreground">124</span>
+            <span className="text-muted-foreground">Following</span>
           </div>
           <div className="flex items-center space-x-1 cursor-pointer hover:underline">
-            <span className="font-bold text-white">892</span>
-            <span className="text-gray-500">Followers</span>
+            <span className="font-bold text-foreground">892</span>
+            <span className="text-muted-foreground">Followers</span>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-2">
-        <TabsList className="grid w-full grid-cols-4 bg-transparent border-b border-gray-800 rounded-none h-auto p-0">
-          {["Posts", "Replies", "Media", "Likes"].map((tab) => (
+        <TabsList className="grid w-full grid-cols-5 bg-transparent border-b border-border rounded-none h-auto p-0">
+          {["Posts", "Replies", "Media", "Likes", "Security"].map((tab) => (
             <TabsTrigger
               key={tab}
               value={tab.toLowerCase()}
-              className="data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:border-b-[4px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-gray-500 hover:bg-gray-900/50 py-4 font-bold transition-all"
+              className="data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:border-b-[4px] data-[state=active]:border-blue-500 data-[state=active]:rounded-none text-muted-foreground hover:bg-accent py-4 font-bold transition-all text-sm"
             >
               {tab}
             </TabsTrigger>
@@ -274,7 +315,7 @@ export default function ProfilePage() {
         </TabsList>
 
         <TabsContent value="posts" className="mt-0">
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-border">
             {loading ? (
               <div className="py-12 flex justify-center">
                 <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
@@ -285,10 +326,10 @@ export default function ProfilePage() {
               ))
             ) : (
               <div className="py-12 text-center px-4">
-                <h3 className="text-2xl font-extrabold text-white mb-2">
+                <h3 className="text-2xl font-extrabold text-foreground mb-2">
                   @{user.username} hasn't posted yet
                 </h3>
-                <p className="text-gray-500 max-w-xs mx-auto">
+                <p className="text-muted-foreground max-w-xs mx-auto">
                   When they do, their posts will show up here.
                 </p>
               </div>
@@ -296,13 +337,17 @@ export default function ProfilePage() {
           </div>
         </TabsContent>
 
+        <TabsContent value="security" className="mt-0 p-4">
+          <LoginHistory />
+        </TabsContent>
+
         {["replies", "media", "likes"].map((tabValue) => (
           <TabsContent key={tabValue} value={tabValue} className="mt-0">
             <div className="py-12 text-center px-4">
-              <h3 className="text-2xl font-extrabold text-white mb-2 capitalize">
+              <h3 className="text-2xl font-extrabold text-foreground mb-2 capitalize">
                 No {tabValue} yet
               </h3>
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 When there's something to show, it will appear here.
               </p>
             </div>
@@ -316,4 +361,4 @@ export default function ProfilePage() {
       />
     </div>
   );
-}
+}

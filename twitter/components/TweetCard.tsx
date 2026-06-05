@@ -10,6 +10,7 @@ import {
   Repeat2,
   Share,
   MoreHorizontal,
+  Mic,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import axiosInstance from "@/lib/axiosInstance";
@@ -26,7 +27,7 @@ export default function TweetCard({ tweet }: any) {
       const res = await axiosInstance.post(`/like/${tweetId}`, {
         userId: authorId,
       });
-      
+
       const updatedTweet = { ...res.data, id: res.data._id };
       settweetstate(updatedTweet);
     } catch (error) {
@@ -47,7 +48,7 @@ export default function TweetCard({ tweet }: any) {
       const res = await axiosInstance.post(`/retweet/${tweetId}`, {
         userId: authorId,
       });
-      
+
       const updatedTweet = { ...res.data, id: res.data._id };
       settweetstate(updatedTweet);
     } catch (error) {
@@ -92,20 +93,20 @@ export default function TweetCard({ tweet }: any) {
   const tweetId = tweetstate._id || tweetstate.id;
 
   return (
-    <Card className="bg-black border-gray-800 border-x-0 border-t-0 rounded-none hover:bg-gray-950/50 transition-colors cursor-pointer group/card">
+    <Card className="bg-background border-border border-x-0 border-t-0 rounded-none hover:bg-accent/5 transition-colors cursor-pointer group/card">
       <CardContent className="p-4">
         <div className="flex space-x-3">
-          <Avatar className="h-12 w-12 border border-gray-800">
+          <Avatar className="h-12 w-12 border border-border">
             <AvatarImage
               src={tweetstate.author.avatar}
               alt={tweetstate.author.displayName}
             />
-            <AvatarFallback>{tweetstate.author.displayName?.[0]}</AvatarFallback>
+            <AvatarFallback className="bg-muted text-muted-foreground">{tweetstate.author.displayName?.[0]}</AvatarFallback>
           </Avatar>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-1">
-              <span className="font-bold text-white hover:underline truncate">
+              <span className="font-bold text-foreground hover:underline truncate">
                 {tweetstate.author.displayName}
               </span>
               {tweetstate.author.verified && (
@@ -118,30 +119,35 @@ export default function TweetCard({ tweet }: any) {
                   </svg>
                 </div>
               )}
-              <span className="text-gray-500 truncate">
+              <span className="text-muted-foreground truncate">
                 @{tweetstate.author.username}
               </span>
-              <span className="text-gray-500 flex-shrink-0">·</span>
-              <span className="text-gray-500 flex-shrink-0 whitespace-nowrap">
+              <span className="text-muted-foreground flex-shrink-0">·</span>
+              <span className="text-muted-foreground flex-shrink-0 whitespace-nowrap">
                 {formatDate(tweetstate.timestamp)}
               </span>
+              {tweetstate.isFromRealTwitter && (
+                <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full uppercase tracking-[0.08em]">
+                  X API
+                </span>
+              )}
               <div className="ml-auto flex-shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 rounded-full hover:bg-blue-500/10 hover:text-blue-400"
+                  className="h-8 w-8 rounded-full hover:bg-blue-500/10 hover:text-blue-400 text-muted-foreground"
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
             </div>
 
-            <div className="text-white mb-3 leading-normal whitespace-pre-wrap break-words">
+            <div className="text-foreground mb-3 leading-normal whitespace-pre-wrap break-words">
               {tweetstate.content}
             </div>
 
             {tweetstate.image && (
-              <div className="mb-3 rounded-2xl overflow-hidden border border-gray-800">
+              <div className="mb-3 rounded-2xl overflow-hidden border border-border">
                 <img
                   src={tweetstate.image}
                   alt="Tweet image"
@@ -150,7 +156,19 @@ export default function TweetCard({ tweet }: any) {
               </div>
             )}
 
-            <div className="flex items-center justify-between text-gray-500 max-w-md">
+            {tweetstate.audio && (
+              <div className="mb-3 p-3 bg-muted/30 rounded-xl border border-border">
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="bg-blue-500/20 p-2 rounded-full">
+                    <Mic className="h-4 w-4 text-blue-500" />
+                  </div>
+                  <span className="text-sm font-medium text-blue-400">Audio Tweet</span>
+                </div>
+                <audio src={tweetstate.audio} controls className="w-full h-10 dark:filter dark:invert dark:brightness-150" />
+              </div>
+            )}
+
+            <div className="flex items-center justify-between text-muted-foreground max-w-md">
               <Button
                 variant="ghost"
                 size="sm"
@@ -165,9 +183,8 @@ export default function TweetCard({ tweet }: any) {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center space-x-2 h-9 px-3 rounded-full hover:bg-green-500/10 hover:text-green-500 transition-colors group ${
-                  isRetweet ? "text-green-500" : ""
-                }`}
+                className={`flex items-center space-x-2 h-9 px-3 rounded-full hover:bg-green-500/10 hover:text-green-500 transition-colors group ${isRetweet ? "text-green-500" : ""
+                  }`}
                 onClick={(e) => {
                   e.stopPropagation();
                   retweetTweet(tweetId);
@@ -182,18 +199,16 @@ export default function TweetCard({ tweet }: any) {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center space-x-2 h-9 px-3 rounded-full hover:bg-red-500/10 hover:text-red-500 transition-colors group ${
-                  isLiked ? "text-red-500" : ""
-                }`}
+                className={`flex items-center space-x-2 h-9 px-3 rounded-full hover:bg-red-500/10 hover:text-red-500 transition-colors group ${isLiked ? "text-red-500" : ""
+                  }`}
                 onClick={(e) => {
                   e.stopPropagation();
                   likeTweet(tweetId);
                 }}
               >
                 <Heart
-                  className={`h-4.5 w-4.5 group-hover:scale-110 transition-transform ${
-                    isLiked ? "fill-red-500 text-red-500" : ""
-                  }`}
+                  className={`h-4.5 w-4.5 group-hover:scale-110 transition-transform ${isLiked ? "fill-red-500 text-red-500" : ""
+                    }`}
                 />
                 <span className="text-xs">
                   {formatNumber(tweetstate.likes)}
@@ -213,4 +228,4 @@ export default function TweetCard({ tweet }: any) {
       </CardContent>
     </Card>
   );
-}
+}

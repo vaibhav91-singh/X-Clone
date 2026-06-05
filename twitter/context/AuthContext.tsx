@@ -3,26 +3,45 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 
 interface User {
-    id?: string;
+    id: string;
     _id?: string;
     username: string;
     email: string;
     displayName: string;
     bio?: string;
     avatar: string;
-    joinDate: string;
+    joinDate?: string;
+    joineDate?: string; // legacy typo kept for compatibility
     location?: string;
     website?: string;
+    notificationsEnabled?: boolean;
+}
+
+interface DeviceInfo {
+    browser: string;
+    os: string;
+    device: string;
+}
+
+interface LoginResponse {
+    requiresOTP: boolean;
+    message: string;
+    user?: User;
+    loginRecordId?: string;
+    deviceInfo?: DeviceInfo;
 }
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<LoginResponse>;
+    verifyLoginOTP: (email: string, otp: string, loginRecordId?: string) => Promise<void>;
     logout: () => Promise<void>;
     signup: (email: string, password: string, username: string, displayName: string) => Promise<void>;
-    googlesignin: () => Promise<void>;
+    loading: boolean;
+    isloading: boolean;
     isLoading: boolean;
-    updateProfile: (profileData: { displayName: string; bio: string; location: string; website: string; }) => Promise<void>;
+    updateProfile: (profileData: Partial<User>) => Promise<void>;
+    googlesignin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -37,129 +56,129 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isloading, setIsLoading] = useState(false);
 
-    const fetchLoggedInUser = async (email: string) => {
+    useEffect(() => {
+        const saveduser = localStorage.getItem("twitter-user");
+        if (saveduser) {
+            setUser(JSON.parse(saveduser));
+        }
+    }, []);
+
+    const login = async (email: string, password: string): Promise<LoginResponse> => {
+        setIsLoading(true);
         try {
-            const res = await axiosInstance.get(`/loggedinuser?email=${email}`);
-            if (res.data) {
-                const userData = { ...res.data, id: res.data._id };
-                setUser(userData);
-                localStorage.setItem("twitter-user", JSON.stringify(userData));
+            const response = await axiosInstance.post("/auth/initiate-login", {
+                email,
+                password,
+            });
+
+            const data: LoginResponse = response.data;
+
+            if (!data.requiresOTP) {
+                // Direct login successful (Microsoft browser or non-Chrome)
+                if (data.user) {
+                    const userWithId = { ...data.user, id: data.user._id || "1" };
+                    setUser(userWithId);
+                    localStorage.setItem("twitter-user", JSON.stringify(userWithId));
+                }
             }
-        } catch (error) {
-            console.error("Failed to fetch logged in user", error);
-        } finally {
+            // If requiresOTP is true, we'll wait for OTP verification
+
             setIsLoading(false);
+            return data;
+        } catch (error: any) {
+            setIsLoading(false);
+            throw new Error(error.response?.data?.error || "Login failed");
         }
     };
 
-    useEffect(() => {
-        const savedUser = localStorage.getItem("twitter-user");
-        if (savedUser) {
-            try {
-                const parsedUser = JSON.parse(savedUser);
-                setUser(parsedUser);
-                // Re-verify with backend
-                fetchLoggedInUser(parsedUser.email);
-            } catch (e) {
-                console.error("Failed to parse saved user", e);
-                localStorage.removeItem("twitter-user");
-                setIsLoading(false);
-            }
-        } else {
-            setIsLoading(false);
-        }
-    }, [])
-
-    const login = async (email: string, password: string) => {
+    const verifyLoginOTP = async (email: string, otp: string, loginRecordId?: string) => {
         setIsLoading(true);
         try {
-            // Backend doesn't have a specific login, using register as findOrCreate
-            const res = await axiosInstance.post("/register", { email, displayName: email.split('@')[0], username: email.split('@')[0], avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` });
-            const userData = { ...res.data, id: res.data._id };
-            setUser(userData);
-            localStorage.setItem("twitter-user", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Login failed", error);
-            throw error;
-        } finally {
+            const response = await axiosInstance.post("/auth/verify-login-otp", {
+                email,
+                otp,
+                loginRecordId,
+            });
+
+            const userData = response.data.user;
+            const userWithId = { ...userData, id: userData._id || "1" };
+            setUser(userWithId);
+            localStorage.setItem("twitter-user", JSON.stringify(userWithId));
             setIsLoading(false);
+        } catch (error: any) {
+            setIsLoading(false);
+            throw new Error(error.response?.data?.error || "OTP verification failed");
         }
-    }
+    };
 
     const signup = async (email: string, password: string, username: string, displayName: string) => {
         setIsLoading(true);
         try {
-            const res = await axiosInstance.post("/register", {
+            // Register user
+            const response = await axiosInstance.post("/register", {
                 email,
+                password,
                 username,
                 displayName,
                 avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
             });
-            const userData = { ...res.data, id: res.data._id };
-            setUser(userData);
-            localStorage.setItem("twitter-user", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Signup failed", error);
-            throw error;
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
-    const googlesignin = async () => {
-        setIsLoading(true);
-        try {
-            // Mocking google signin response then registering
-            const googleEmail = "vaibhav@gmail.com";
-            const res = await axiosInstance.post("/register", {
-                email: googleEmail,
-                displayName: "Vaibhav Singh",
-                username: "vaibhav_google",
-                avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=80",
-            });
-            const userData = { ...res.data, id: res.data._id };
-            setUser(userData);
-            localStorage.setItem("twitter-user", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Google signin failed", error);
-        } finally {
+            const userData = response.data;
+            const userWithId = { ...userData, id: userData._id || "1" };
+            setUser(userWithId);
+            localStorage.setItem("twitter-user", JSON.stringify(userWithId));
             setIsLoading(false);
+        } catch (error: any) {
+            setIsLoading(false);
+            throw new Error(error.response?.data?.error || "Signup failed");
         }
-    }
+    };
 
     const logout = async () => {
+        setIsLoading(true);
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setUser(null);
         localStorage.removeItem("twitter-user");
-    }
+        setIsLoading(false);
+    };
 
-    const updateProfile = async (profileData: { 
-        displayName: string;
-        bio: string;
-        location: string;
-        website: string;
-    }) => {
+    const updateProfile = async (profileData: Partial<User>) => {
         setIsLoading(true);
-        if(!user) return;
+        if (!user) return;
+        
         try {
-            const res = await axiosInstance.patch(`/userupdate/${user.email}`, profileData);
-            const userData = { ...res.data, id: res.data._id };
-            setUser(userData);
-            localStorage.setItem("twitter-user", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Update profile failed", error);
-            throw error;
-        } finally {
+            const response = await axiosInstance.patch(`/userupdate/${user.email}`, profileData);
+            const updatedUser = { ...response.data, id: response.data._id || user.id };
+            setUser(updatedUser);
+            localStorage.setItem("twitter-user", JSON.stringify(updatedUser));
             setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            throw error;
         }
-    }
+    };
+
+    const googlesignin = () => {
+        // Mock Google sign-in — uses same mock flow as login
+        login("google@example.com", "mock-google-password");
+    };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, signup, googlesignin, isLoading, updateProfile }}>
+        <AuthContext.Provider value={{
+            user,
+            login,
+            verifyLoginOTP,
+            logout,
+            signup,
+            isloading,
+            isLoading: isloading,
+            loading: isloading,
+            updateProfile,
+            googlesignin,
+        }}>
             {children}
         </AuthContext.Provider>
-    )
-}
-
-
+    );
+};
